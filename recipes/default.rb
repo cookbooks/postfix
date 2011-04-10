@@ -22,16 +22,25 @@ package "postfix" do
   action :install
 end
 
+if (node[:platform] == "amazon")
+  package "sendmail" do
+    action :remove
+  end
+end
+
 service "postfix" do
   action :enable
 end
 
-%w{main master}.each do |cfg|
-  template "/etc/postfix/#{cfg}.cf" do
-    source "#{cfg}.cf.erb"
-    owner "root"
-    group "root"
-    mode 0644
-    notifies :restart, resources(:service => "postfix")
+# unless I'm being naive, the out-of-the-box configuration is good for localhost sendmail
+unless (node[:postfix][:mail_type] == "default")
+  %w{main master}.each do |cfg|
+    template "/etc/postfix/#{cfg}.cf" do
+      source "#{cfg}.cf.erb"
+      owner "root"
+      group "root"
+      mode 0644
+      notifies :restart, resources(:service => "postfix")
+    end
   end
 end

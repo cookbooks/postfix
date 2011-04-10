@@ -212,6 +212,9 @@
       ],
       "ubuntu": [
 
+      ],
+      "amazon": [
+
       ]
     },
     "license": "Apache 2.0",
